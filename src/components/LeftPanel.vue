@@ -6,6 +6,7 @@
         @add-seat="addSeat"
         @bulk-add-seats="bulkAddSeats"
         @delete-seats="deleteSeats"
+        @fetch-patron-for-seat="fetchPatronForSeat"
       />
     </div>
 
@@ -22,7 +23,7 @@
             <span>Pending</span>
           </label>
 
-          <div class="refresh-icon" @click="fetchSeats">⟳</div>
+          <div class="refresh-icon" @click="fetchPatrons">⟳</div>
         </div>
       </div>
       
@@ -37,7 +38,7 @@
           </thead>
           <tbody>
               <tr
-                v-for="patron in patrons"
+                v-for="patron in filteredPatrons"
                 :key="patron.id"
                 :class="{ 'selected' : selectedPatron === patron.id }"
                 @click="togglePatronSelection(patron.id)"
@@ -45,8 +46,8 @@
                   <td>{{ patron.seat }}</td>
                   <td>{{ patron.name + " " + patron.name + " " + patron.name }}</td>
                   <td>
-                    <span :class="['status-pill', {'paid': patron.payment_status, 'pending': !patron.payment_status}]">
-                    {{patron.payment_status? 'paid': 'pending'}}
+                    <span :class="['status-pill', {'paid': patron.paid, 'pending': !patron.paid}]">
+                    {{patron.paid? 'paid': 'pending'}}
                     </span>
                   </td>
               </tr>
@@ -60,97 +61,96 @@
     import SeatsPanel from './SeatsPanel.vue'
     import { ref, computed, watch } from 'vue'
 
-    const seatCategories = ["AC", "Non AC"]
-
-    const seats = ref(null)
-    const patrons = ref(null)
+    const props = defineProps({
+      seats: {
+        type: Array,
+        required: true
+      },
+      patrons:{
+        type: Array,
+        required: true
+      },
+      seatCategories:{
+        type: Array,
+        required: true
+      }
+    })  
+    
+    
+    const filteredPatrons = ref(props.patrons)
     const selectedPatron = ref(null)
+
+    const emit = defineEmits([
+      "add-seat",
+      "bulk-add-seats",
+      "delete-seats",
+      "refresh-seats",
+      "refresh-patrons"
+    ])
+
     const showPendingOnly = ref(false)
-
-    function generateSeats() {
-      const rrms_seats = new Array()
-      const rows = ["A", "B"];
-      for (let r of rows) {
-        for (let i = 1; i <= 20; i++) {
-          const k = Math.floor(Math.random()*3)
-          rrms_seats.push({
-            id: i+r,
-            is_vacant: k == 0 ? true : false,
-            category: seatCategories[Math.floor(Math.random()*2)]
-          })
-        }
+    watch(showPendingOnly, (status) => {
+      if (status){
+        filteredPatrons.value = props.patrons.filter(function (el) {
+          return !el.paid;
+        });
+      }else{
+        filteredPatrons.value = props.patrons
       }
-      seats.value = rrms_seats 
-    }
+    })
 
-    function refreshSeats(event) {
-      alert("Seats refreshed!");
-    }
-
-    function generatePatrons() {
-      const category_amount = [{category: "tier 1", amount: "1000"}, {category: "tier 2", amount: "2000"}, {category: "tier 3", amount: "3000"}]
-      const rrms_patrons = new Array()
-      for (let i = 1; i <= 20; i++) {
-        const n = generateName()
-        const tier = Math.floor(Math.random()*2)
-        rrms_patrons.push({
-          id: i,
-          name: n,
-          phone: generatePhone(),
-          email: n + "gmail.com",
-          start_date: "Mon, Feb 02, 2026",
-          category: category_amount[tier].category,
-          amount:category_amount[tier].amount,
-          payment_status: Math.floor(Math.random()*3) === 0 ? true : false,
-          seat: i,
-        })
+    const seatFilter = ref(null)
+    watch(seatFilter, (seatId) => {
+      if (seatId){
+        filteredPatrons.value = props.patrons.filter(function (el) {
+          return el.seat === seatId;
+        });
+      }else{
+        filteredPatrons.value = props.patrons
       }
-      patrons.value = rrms_patrons 
+    })
+
+    function fetchPatronForSeat(seatId){
+      seatFilter.value = seatId
     }
 
-    function generateName() {
-      const alphabets = "abcdefghijklmnopqrstuvwxyz"
-      const l = 4 + Math.floor(Math.random()*5)
-      let sofar = ""
-      for (let i = 0; i <= l; i++){
-        sofar +=  alphabets[Math.floor(Math.random()*25)]
-      }
-      return sofar
+    function fetchSeats() {
+      emit("refresh-seats")
+      console.log("LeftPanel: Seats refreshed!");
     }
 
-    function generatePhone(){
-      const nums = "1234567890"
-      let sofar = ""
-      for (let i = 1; i <= 10; i++){
-        let k = nums[Math.floor(Math.random()*9)]
-        sofar += k
-      }
-      return sofar
+    function fetchPatrons() {
+      selectedPatron.value = null
+      seatFilter.value = null
+      showPendingOnly.value = false
+      emit("refresh-patrons")
+      console.log("LeftPanel: fetching patrons");
     }
 
-
-    // Initial load
-    generateSeats();
-    generatePatrons();
-
-
-    function fetchSeats(){
-      console.log("fetching seats")
+    function addSeat(newSeat){
+      emit("add-seat", newSeat)
+      console.log(`LeftPanel: new seat with ID: ${newSeat.id} Category: ${newSeat.category} Status: ${newSeat.status} added`)
     }
-    function addSeat(s){
-      console.log("add seat")
-    }
+
     function bulkAddSeats(f){
-      console.log("bulk adding seats")
+      emit("bulk-add-seats", f)
+      console.log("LeftPanel: bulk-add-seats", f)
+      for (let ns in f){
+        console.log(`LeftPanel: new seat with ID: ${ns.id} Category: ${ns.category} Status: ${ns.status} added`)
+      }
     }
-    function deleteSeats(s){
-      console.log("bulk deleting seats")
+
+    function deleteSeats(seatsToDelete){
+      console.log("LeftPanel", seatsToDelete)
+      emit('delete-seats', seatsToDelete)
+      for (let std of seatsToDelete){
+        console.log(`LeftPanel: seat with ID: ${std} to be deleted`)
+      }
     }
 
     function togglePatronSelection(id) {
       selectedPatron.value = (selectedPatron.value === null) || (selectedPatron.value !== id) ? id : null 
     }
-
 </script>
 
 <style scoped>
@@ -299,3 +299,5 @@
     font-size: 20px;
   }
 </style>
+
+

@@ -87,6 +87,7 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
+    margin-top: 15px;
   }
 
   .form-group input {

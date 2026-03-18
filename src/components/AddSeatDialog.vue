@@ -35,7 +35,7 @@
           <input v-model="newSeat.id" placeholder="Enter ID">
         </div>
 
-        <button class="primary" @click="submitSeat">Save</button>
+        <button class="primary" @click="addSeat">Save</button>
       </div>
     </div>
 
@@ -75,12 +75,13 @@
     const reader = new FileReader()
     reader.onload = () => {
       emit("bulk-add-seats", reader.result)
+      console.log(reader.result)
       selectedFile.value = null
     }
     reader.readAsText(selectedFile.value)
   }
 
-  function submitSeat() {
+  function addSeat() {
     emit("add-seat", newSeat.value)
     newSeat.value = { id: "", category: "", status: "Vacant" }
   }

@@ -3,7 +3,7 @@
     <div class="l1s1-header seats-header">
       <div class="seats-left">
         <h2>Seats</h2>
-        <div class="refresh-icon" @click="$emit('refresh-seats')">⟳</div>
+        <div class="refresh-icon" @click="refreshSeats()">⟳</div>
       </div>
 
       <div class="seats-right">
@@ -31,7 +31,8 @@
       <div
         v-for="seat in filteredSeats"
         :key="seat.id"
-        :class="['seat', {'vacant': seat.is_vacant, 'occupied': !seat.is_vacant}]"
+        :class="['seat', {'vacant': seat.is_vacant, 'occupied': !seat.is_vacant}, { selected: selectedSeat === seat.id }]"
+        @click="toggleSeatSelection(seat.id)"
       >
         {{ seat.id }}
       </div>
@@ -59,7 +60,7 @@
 <script setup>
 import AddSeatDialog from './AddSeatDialog.vue'
 import DeleteSeatDialog from './DeleteSeatDialog.vue'
-import { ref, computed } from "vue"
+import { ref, computed, watch } from "vue"
 
 const props = defineProps({
   seats: {
@@ -72,7 +73,8 @@ const emit = defineEmits([
   "add-seat",
   "bulk-add-seats",
   "delete-seats",
-  "refresh-seats"
+  "refresh-seats",
+  "fetch-patron-for-seat",
 ])
 
 const selectedCategory = ref("")
@@ -81,7 +83,24 @@ const showMenu = ref(false)
 const showAddDialog = ref(false)
 const showDeleteDialog = ref(false)
 
+const selectedSeat = ref(null)
 
+watch(selectedSeat, (value) =>{
+  // if (value){
+  //   emit("fetch-patron-for-seat", value)
+  //   console.log("SeatesPanel: fetch patron for seatd", value)
+  // }
+  emit("fetch-patron-for-seat", value)
+})
+
+function toggleSeatSelection(seatId){
+  selectedSeat.value = (selectedSeat.value === null) || (selectedSeat.value !== seatId) ? seatId : null
+}
+
+function refreshSeats(){
+  emit('refresh-seats')
+  selectedSeat.value = null
+}
 
 function toggleMenu() {
   showMenu.value = !showMenu.value
@@ -114,19 +133,24 @@ const filteredSeats = computed(() => {
   )
 })
 
-
 function addSeat(newSeat) {
   emit("add-seat", newSeat)
+  console.log(`SeatsPanel: new seat with ID: ${newSeat.id} Category: ${newSeat.category} Status: ${newSeat.status} added`)
   closeDialogs()
 }
 
-function bulkAddSeats(newSeats){
-  emit("bulk-add-seats", newSeats)
+function bulkAddSeats(fileContent){
+  emit("bulk-add-seats", fileContent)
+  console.log("SeatesPanel: bulk-add-seats", fileContent)
   closeDialogs()
 }
 
 function deleteSeats(seatsToDelete) {
+  console.log("SeatsPanel", seatsToDelete)
   emit("delete-seats", seatsToDelete)
+  for (let std of seatsToDelete){
+    console.log(`SeatsPanel: seat with ID: ${std} to be deleted`)
+  }
   closeDialogs()
 }
 </script>
@@ -186,6 +210,10 @@ function deleteSeats(seatsToDelete) {
 
   .seat.vacant:hover {
     background: #a7f3d0;
+  }
+
+  .selected {
+    outline: 3px solid red;
   }
 
   .menu{

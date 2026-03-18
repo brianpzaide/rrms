@@ -77,7 +77,9 @@
   }
 
   function deleteSeats() {
-    emit("delete-seats", seatsToDelete.value)
+    const stds = seatsToDelete.value
+    console.log("DeleteSeatsDialog", stds)
+    emit("delete-seats", stds)
     seatsToDelete.value = []
   }
 

@@ -14,7 +14,11 @@
 
   <div class="container">
     <div class="sec1">
-      <LeftPanel/>
+      <LeftPanel
+      :seats="seats"
+      :patrons="patrons"
+      :seatCategories="seatCategories"
+      />
     </div>
 
     <div class="sec2">
@@ -32,24 +36,92 @@
   import { ref } from "vue"
 
   const selectedPatron = ref(null)
-  
-  let monthlyChart = null;
-  let yearlyChart = null;
+  const seatCategories = ["AC", "Non AC"]
 
-  function toggleAnalytics() {
-    const section = document.getElementById("analyticsSection");
-    const icon = document.getElementById("analyticsToggleIcon");
+  const seats = ref([])
+  const patrons = ref([])
 
-    section.classList.toggle("collapsed");
-    icon.textContent = section.classList.contains("collapsed") ? "▼" : "▲";
-
-    if (!section.classList.contains("collapsed")) {
-      setTimeout(() => {
-        monthlyChart?.resize();
-        yearlyChart?.resize();
-      }, 300);
+  function generateSeats() {
+    const rrms_seats = new Array()
+    const rows = ["A", "B"];
+    for (let r of rows) {
+      for (let i = 1; i <= 20; i++) {
+        const k = Math.floor(Math.random()*3)
+        rrms_seats.push({
+          id: i+r,
+          is_vacant: k == 0 ? true : false,
+          category: seatCategories[Math.floor(Math.random()*2)]
+        })
+      }
     }
+    seats.value = rrms_seats 
   }
+
+  function generatePatrons() {
+    const category_amount = [{category: "tier 1", amount: "1000"}, {category: "tier 2", amount: "2000"}, {category: "tier 3", amount: "3000"}]
+    const rrms_patrons = new Array()
+    for (let i = 1; i <= 20; i++) {
+      const n = generateName()
+      const tier = Math.floor(Math.random()*2)
+      rrms_patrons.push({
+        id: i,
+        name: n,
+        phone: generatePhone(),
+        email: n + "gmail.com",
+        start_date: "Mon, Feb 02, 2026",
+        category: category_amount[tier].category,
+        amount:category_amount[tier].amount,
+        paid: Math.floor(Math.random()*3) === 0 ? true : false,
+        seat: i,
+      })
+    }
+    patrons.value = rrms_patrons 
+  }
+
+  function generateName() {
+    const alphabets = "abcdefghijklmnopqrstuvwxyz"
+    const l = 4 + Math.floor(Math.random()*5)
+    let sofar = ""
+    for (let i = 0; i <= l; i++){
+      sofar +=  alphabets[Math.floor(Math.random()*25)]
+    }
+    return sofar
+  }
+
+  function generatePhone(){
+    const nums = "1234567890"
+    let sofar = ""
+    for (let i = 1; i <= 10; i++){
+      let k = nums[Math.floor(Math.random()*9)]
+      sofar += k
+    }
+    return sofar
+  }
+
+
+  // Initial load
+  generateSeats();
+  generatePatrons();
+
+  
+  
+  // let monthlyChart = null;
+  // let yearlyChart = null;
+
+  // function toggleAnalytics() {
+  //   const section = document.getElementById("analyticsSection");
+  //   const icon = document.getElementById("analyticsToggleIcon");
+
+  //   section.classList.toggle("collapsed");
+  //   icon.textContent = section.classList.contains("collapsed") ? "▼" : "▲";
+
+  //   if (!section.classList.contains("collapsed")) {
+  //     setTimeout(() => {
+  //       monthlyChart?.resize();
+  //       yearlyChart?.resize();
+  //     }, 300);
+  //   }
+  // }
 
   // function initAnalyticsCharts(root = document) {
   //   const container = root.querySelector("#analyticsCharts");
