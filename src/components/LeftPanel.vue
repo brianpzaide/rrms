@@ -38,7 +38,10 @@
           <tbody>
               <tr
                 v-for="patron in patrons"
-                :key="patron.id">
+                :key="patron.id"
+                :class="{ 'selected' : selectedPatron === patron.id }"
+                @click="togglePatronSelection(patron.id)"
+                >
                   <td>{{ patron.seat }}</td>
                   <td>{{ patron.name + " " + patron.name + " " + patron.name }}</td>
                   <td>
@@ -142,6 +145,10 @@
     }
     function deleteSeats(s){
       console.log("bulk deleting seats")
+    }
+
+    function togglePatronSelection(id) {
+      selectedPatron.value = (selectedPatron.value === null) || (selectedPatron.value !== id) ? id : null 
     }
 
 </script>
@@ -265,7 +272,7 @@
   }
 
   tbody tr:hover {
-    background: #f1f5f9;
+    background: #dbeafe;
   }
 
   .status-pill {
