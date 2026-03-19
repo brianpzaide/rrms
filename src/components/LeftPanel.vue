@@ -85,7 +85,8 @@
       "bulk-add-seats",
       "delete-seats",
       "refresh-seats",
-      "refresh-patrons"
+      "refresh-patrons",
+      "patron-selected"
     ])
 
     const showPendingOnly = ref(false)
@@ -149,7 +150,13 @@
     }
 
     function togglePatronSelection(id) {
-      selectedPatron.value = (selectedPatron.value === null) || (selectedPatron.value !== id) ? id : null 
+      if ((selectedPatron.value === null) || (selectedPatron.value !== id)){
+        emit("patron-selected", id)
+        selectedPatron.value = id
+      }else{
+        selectedPatron.value = null
+      }
+      // selectedPatron.value = (selectedPatron.value === null) || (selectedPatron.value !== id) ? id : null 
     }
 </script>
 

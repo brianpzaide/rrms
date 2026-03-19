@@ -18,6 +18,7 @@
       :seats="seats"
       :patrons="patrons"
       :seatCategories="seatCategories"
+      @patron-selected="patronSelected"
       />
     </div>
 
@@ -33,11 +34,19 @@
   import LeftPanel from './components/LeftPanel.vue'
   import RightPanel from './components/RightPanel.vue'
 
-  import { ref } from "vue"
+  import { ref, watch } from "vue"
 
-  const selectedPatron = ref(null)
+  
   const seatCategories = ["AC", "Non AC"]
 
+  const selectedPatron = ref(null)
+  // watch(selectedPatron, (value) =>{
+
+  // })
+  function patronSelected(id){
+    selectedPatron.value = patrons.value[id]
+  }
+  
   const seats = ref([])
   const patrons = ref([])
 
@@ -46,10 +55,11 @@
     const rows = ["A", "B"];
     for (let r of rows) {
       for (let i = 1; i <= 20; i++) {
-        const k = Math.floor(Math.random()*3)
+        // const k = Math.floor(Math.random()*3)
         rrms_seats.push({
           id: i+r,
-          is_vacant: k == 0 ? true : false,
+          // is_vacant: k == 0 ? true : false,
+          is_vacant: true,
           category: seatCategories[Math.floor(Math.random()*2)]
         })
       }
@@ -58,21 +68,31 @@
   }
 
   function generatePatrons() {
+    const seats_taken = new Set()
     const category_amount = [{category: "tier 1", amount: "1000"}, {category: "tier 2", amount: "2000"}, {category: "tier 3", amount: "3000"}]
     const rrms_patrons = new Array()
-    for (let i = 1; i <= 20; i++) {
+    for (let i = 0; i <= 20; i++) {
       const n = generateName()
       const tier = Math.floor(Math.random()*2)
+      let seat_assigned = 0
+      let k = Math.floor(Math.random()*(seats.value.length))
+      while (seats_taken.has(seats.value[k].id)){
+        k = Math.floor(Math.random()*(seats.value.length))
+      }
+      const seatId = seats.value[k].id
+      seats.value[k].is_vacant = false
+      seats_taken.add(seatId)
       rrms_patrons.push({
         id: i,
         name: n,
         phone: generatePhone(),
-        email: n + "gmail.com",
-        start_date: "Mon, Feb 02, 2026",
+        email: n + "@gmail.com",
+        start_date: "Mon, Mar 02, 2026",
         category: category_amount[tier].category,
-        amount:category_amount[tier].amount,
+        amount: category_amount[tier].amount,
         paid: Math.floor(Math.random()*3) === 0 ? true : false,
-        seat: i,
+        seat: seatId,
+        payments: generatePaymentHistory(category_amount[tier].amount, n)
       })
     }
     patrons.value = rrms_patrons 
@@ -96,6 +116,20 @@
       sofar += k
     }
     return sofar
+  }
+
+  function generatePaymentHistory(amount, patronName){
+    const k = Math.floor(Math.random()*6)
+    const payment_history = []
+    for (let i = 0; i<k; i++){
+      payment_history.push({
+        id: patronName+i,
+        date: "",
+        amount: amount,
+        status: Math.floor(Math.random()*307+1) % 47 === 0
+      })
+    }
+    return payment_history
   }
 
 
