@@ -107,9 +107,15 @@
     padding: 8px 12px;
     border: none;
     border-radius: 9px;
-    background: #007bff;
-    color: white;
+    background: #dcfce7;
+    color: #166534;
     cursor: pointer;
     width: 75%;
   }
+
+    button:hover {
+      background: #a7f3d0;
+  }
+
+
 </style>

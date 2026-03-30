@@ -20,74 +20,170 @@
         <span class="icon"></span>
       </div>
 
-      <div class="detail-row">
-        <span class="label">Seat:</span>
-        <span v-if="editingField !== 'seat'">
-          <span class="value">{{ selectedPatron.seat }}</span>
-          <span class="icon edit-icon" @click="startEdit('seat')">✏️</span>
-        </span>
-        <span v-else>
-          <input v-model="editValues.seat" />
-          <button @click="saveEdit('seat')">✔</button>
-          <button @click="cancelEdit">✖</button>
-        </span>
-      </div>
+<div class="detail-row">
+  <span class="label">Seat</span>
 
+  <div class="field-content">
+    <template v-if="editingField !== 'seat'">
+      <span class="value">{{ selectedPatron.seat }}</span>
+    </template>
 
-      <div class="detail-row">
-        <span class="label">Amount:</span>
-        <span v-if="editingField !== 'amount'">
-          <span class="value">{{ selectedPatron.amount }}</span>
-          <span class="icon edit-icon" @click="startEdit('amount')">✏️</span>
-        </span>
-        <span v-else>
-          <input v-model="editValues.amount" />
-          <button @click="saveEdit('amount')">✔</button>
-          <button @click="cancelEdit">✖</button>
-        </span>
-      </div>
+    <template v-else>
+      <input
+        v-model="editValues.seat"
+        class="field-input"
+      />
+    </template>
+  </div>
 
-      <div class="detail-row">
-        <span class="label">Category:</span>
-        <span v-if="editingField !== 'category'">
-          <span class="value">{{ selectedPatron.category }}</span>
-          <span class="icon edit-icon" @click="startEdit('category')">✏️</span>
-        </span>
-        <span v-else>
-          <input v-model="editValues.category" />
-          <button @click="saveEdit('category')">✔</button>
-          <button @click="cancelEdit">✖</button>
-        </span>
-      </div>
+  <div class="field-actions">
+    <template v-if="editingField !== 'seat'">
+      <button
+        class="icon-btn"
+        @click="startEdit('seat')"
+      >
+        ✏️
+      </button>
+    </template>
 
-      <div class="detail-row">
-        <span class="label">Payment Status:</span>
-        <span class="value" v-if="!selectedPatron.paid">
-          <label>
-            <input
-              type="radio"
-              value="pending"
-              checked
-              disabled
-            />
-            <span :class="['status-pill', 'pending']">Pending</span>
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="paid"
-              @change="markCurrentMonthPaid"
-            />
-            <span :class="['status-pill', 'paid']">Paid</span>
-          </label>
-        </span>
-        <span v-else :class="['value', 'status-pill', {'paid': selectedPatron.paid, 'pending': !selectedPatron.paid}]">
-          Paid
-        </span>
+    <template v-else>
+      <button
+        class="icon-btn save"
+        @click="saveEdit('seat')"
+      >
+        ✔
+      </button>
+      <button
+        class="icon-btn cancel"
+        @click="cancelEdit"
+      >
+        ✖
+      </button>
+    </template>
+  </div>
+</div>
+
+<div class="detail-row">
+  <span class="label">Amount</span>
+
+  <div class="field-content">
+    <template v-if="editingField !== 'amount'">
+      <span class="value">{{ selectedPatron.amount }}</span>
+    </template>
+
+    <template v-else>
+      <input
+        v-model="editValues.amount"
+        class="field-input"
+      />
+    </template>
+  </div>
+
+  <div class="field-actions">
+    <template v-if="editingField !== 'amount'">
+      <button
+        class="icon-btn"
+        @click="startEdit('amount')"
+      >
+        ✏️
+      </button>
+    </template>
+
+    <template v-else>
+      <button
+        class="icon-btn save"
+        @click="saveEdit('amount')"
+      >
+        ✔
+      </button>
+      <button
+        class="icon-btn cancel"
+        @click="cancelEdit"
+      >
+        ✖
+      </button>
+    </template>
+  </div>
+</div>
+
+<div class="detail-row">
+  <span class="label">Category</span>
+
+  <div class="field-content">
+    <template v-if="editingField !== 'category'">
+      <span class="value">{{ selectedPatron.category }}</span>
+    </template>
+
+    <template v-else>
+      <input
+        v-model="editValues.category"
+        class="field-input"
+      />
+    </template>
+  </div>
+
+  <div class="field-actions">
+    <template v-if="editingField !== 'category'">
+      <button
+        class="icon-btn"
+        @click="startEdit('category')"
+      >
+        ✏️
+      </button>
+    </template>
+
+    <template v-else>
+      <button
+        class="icon-btn save"
+        @click="saveEdit('category')"
+      >
+        ✔
+      </button>
+      <button
+        class="icon-btn cancel"
+        @click="cancelEdit"
+      >
+        ✖
+      </button>
+    </template>
+  </div>
+</div>
+
+<div class="detail-row">
+  <span class="label">Payment Status</span>
+
+  <div class="field-content">
+    <template v-if="!selectedPatron.paid">
+      <div class="payment-status-group">
+        <label class="status-option">
+          <input
+            type="radio"
+            name="current-payment-status"
+            checked
+          />
+          <span class="status-pill pending">Pending</span>
+        </label>
+
+        <label class="status-option">
+          <input
+            type="radio"
+            name="current-payment-status"
+            @change="markCurrentMonthPaid"
+          />
+          <span class="status-pill paid">Paid</span>
+        </label>
       </div>
+    </template>
+
+    <template v-else>
+      <span class="status-pill paid">Paid</span>
+    </template>
+  </div>
+</div>
+
     </div>
-
-    <div class="l2s2">
+<div class="l2s2">
+  <div class="payment-table-scroll">
       <table>
         <thead>
           <tr>
@@ -117,28 +213,26 @@
                 <label>
                   <input
                     type="radio"
-                    name="payment-{{payment.id}}"
+                    :name="`payment-${payment.id}`"
                     checked
-                    disabled
                   />
-                  Pending
+                  <span class="status-pill pending">Pending</span>
                 </label>
                 <label>
                   <input
                     type="radio"
-                    name="payment-{{payment.id}}"
+                    :name="`payment-${payment.id}`"
                     @change="markPayment(payment)"
                   />
-                  Paid
+                  <span class="status-pill paid">Paid</span>
                 </label>
               </span>
             </td>
-
-
           </tr>
         </tbody>
       </table>
     </div>
+</div>
 
     <div class="sec2-buttons">
       <button
@@ -233,113 +327,315 @@
 
 
 <style scoped>
-  h3 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
+.tab-content.active {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    align-content: center;
-  }
+/* Top patron details card */
+.l2s1 {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
 
-  th, td {
-    padding: 8px;
-    border: 1px solid #ccc;
-    text-align: center;
-    align-content: center;
-  }
 
-  th {
-    background: #f0f0f0;
-  }
+h3 {
+  margin: 0 0 20px;
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #111827;
+}
 
-  tbody tr {
-    cursor: pointer;
-  }
+/* Each patron field row */
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
 
-  .tab-content.active {
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.label {
+  width: 140px;
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.field-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.value {
+  color: #111827;
+  font-size: 0.95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* pushes edit buttons to far right */
+.field-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  transition: background-color 0.15s ease;
+}
+
+.icon-btn:hover {
+  background: #e5e7eb;
+}
+
+.icon-btn.save {
+  background: #dcfce7;
+}
+
+.icon-btn.save:hover {
+  background: #bbf7d0;
+}
+
+.icon-btn.cancel {
+  background: #fee2e2;
+}
+
+.icon-btn.cancel:hover {
+  background: #fecaca;
+}
+
+/* Inline edit input */
+.field-input {
+  width: 100%;
+  max-width: 240px;
+  padding: 8px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+  font-size: 0.95rem;
+  color: #111827;
+}
+
+.field-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* Payment table container */
+.l2s2 {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  max-height: 260px;
     display: flex;
-    flex-direction: column;
-  }
+  flex-direction: column;
+}
 
-  .l2s1 {
-    background: #f9fafb;
-    padding: 10px;
-    border-radius: 4px;
-    width: 100%;
-  }
-  
+/* .l2s2 {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 
+  max-height: 260px;
+  display: flex;
+  flex-direction: column;
+} */
 
-  .detail-row {
-    display: flex;
-    align-items: center;
-  }
+.payment-table-scroll {
+  overflow-y: auto;
+  max-height: 260px;
+}
 
-  .label {
-    width: 160px;
-  }
+.payment-table-scroll table {
+  width: 100%;
+}
 
-  .value {
-    flex: 1;
-  }
-
-  .icon {
-    margin-left: auto;
-  }
-
-  .edit-icon {
-    cursor: pointer;
-    opacity: 0.6;
-  }
-
-  .edit-icon:hover {
-    opacity: 1;
-  }
+.payment-table-scroll thead th {
+  position: sticky;
+  top: 0;
+  background: #f9fafb;
+  z-index: 1;
+}
 
 
+table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow-y: scroll;
+  max-height: 50px;
+}
+
+thead {
+  background: #f9fafb;
+}
+
+th {
+  padding: 14px 16px;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+td {
+  padding: 14px 16px;
+  font-size: 0.92rem;
+  color: #111827;
+  border-bottom: 1px solid #f3f4f6;
+  text-align: center;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr:hover {
+  background: #fafafa;
+}
+
+/* Payment status pill */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 78px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-pill.paid {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-pill.pending {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Radio button groups in table */
+td label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 14px;
+  font-size: 0.9rem;
+  color: #374151;
+  cursor: pointer;
+}
+
+input[type="radio"] {
+  margin: 0;
+  cursor: pointer;
+}
+
+/* Bottom buttons */
+.sec2-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.sec2-buttons button {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.sec2-buttons button:first-child {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.sec2-buttons button:first-child:hover {
+  background: #a7f3d0;
+}
+
+.sec2-buttons .danger {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.sec2-buttons .danger:hover {
+  background: #fecaca;;
+}
 
 
-  .l2s2 {
-    flex: 1;
-    overflow: auto;
-  }
 
-  .sec2-buttons {
-    display: flex;
-    justify-content: space-between;
-  }
+.payment-status-group {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
 
-  .status-pill {
-    text-align: center;
-    font-size: 0.65rem;
-    padding: 2px 8px;
-    border-radius: 12px;
-    color: white;
-    width: 75px;
-  }
+.status-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
 
-  .status-pill.paid {
-    background: #d1fae5;
-    color: #065f46;
-  }
+.status-option input[type="radio"] {
+  margin: 0;
+  cursor: pointer;
+}
 
-  .status-pill.pending {
-    background: #fee2e2;
-    color: #7f1d1d;
-  }
+.status-option input[type="radio"]:disabled {
+  cursor: not-allowed;
+}
 
-  button {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 4px;
-    background: #007bff;
-    color: white;
-    cursor: pointer;
-    margin-top: 10px;
-  }
+.status-option .status-pill {
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
 
-  button.danger { background: #dc3545; }
+.status-option:hover .status-pill {
+  transform: translateY(-1px);
+}
+
+.status-option input[type="radio"]:disabled + .status-pill {
+  opacity: 0.85;
+}
 </style>

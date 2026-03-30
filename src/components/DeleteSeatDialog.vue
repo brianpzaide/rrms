@@ -4,7 +4,7 @@
       <label>Category</label>
       <select v-model="deleteCategory">
         <option
-          v-for="category in categories"
+          v-for="category in categoriesPrime"
           :key="category"
           :value="category"
         >
@@ -50,6 +50,8 @@
       required: true
     }
   })
+
+  const categoriesPrime = ref([null, ...props.categories])
 
   const deleteSeatsFiltered = computed(() => {
     if (!deleteCategory.value) return props.seats
