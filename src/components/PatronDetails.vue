@@ -152,36 +152,36 @@
 <div class="detail-row">
   <span class="label">Payment Status</span>
 
-  <div class="field-content">
-    <template v-if="!selectedPatron.paid">
-      <div class="payment-status-group">
-        <label class="status-option">
-          <input
-            type="radio"
-            name="current-payment-status"
-            checked
-          />
-          <span class="status-pill pending">Pending</span>
-        </label>
+    <div class="field-content">
+      <template v-if="!selectedPatron.paid">
+        <div class="payment-status-group">
+          <label class="status-option">
+            <input
+              type="radio"
+              name="current-payment-status"
+              checked
+            />
+            <span class="status-pill pending">pending</span>
+          </label>
 
-        <label class="status-option">
-          <input
-            type="radio"
-            name="current-payment-status"
-            @change="markCurrentMonthPaid"
-          />
-          <span class="status-pill paid">Paid</span>
-        </label>
-      </div>
-    </template>
+          <label class="status-option">
+            <input
+              type="radio"
+              name="current-payment-status"
+              @change="markCurrentMonthPaid"
+            />
+            <span class="status-pill paid">paid</span>
+          </label>
+        </div>
+      </template>
 
-    <template v-else>
-      <span class="status-pill paid">Paid</span>
-    </template>
-  </div>
-</div>
-
+      <template v-else>
+        <span class="status-pill paid">paid</span>
+      </template>
     </div>
+  </div>
+
+</div>
 <div class="l2s2">
   <div class="payment-table-scroll">
       <table>
@@ -199,11 +199,6 @@
           >
             <td>{{payment.due_date}}</td>
             <td>{{payment.amount}}</td>
-            <!-- <td>
-              <span :class="['status-pill', {'paid': payment.status, 'pending': !payment.status}]">
-                {{payment.status ? 'paid': 'pending'}}
-              </span>
-            </td> -->
 
             <td>
               <span v-if="payment.status">
@@ -216,7 +211,7 @@
                     :name="`payment-${payment.id}`"
                     checked
                   />
-                  <span class="status-pill pending">Pending</span>
+                  <span class="status-pill pending">pending</span>
                 </label>
                 <label>
                   <input
@@ -224,7 +219,7 @@
                     :name="`payment-${payment.id}`"
                     @change="markPayment(payment)"
                   />
-                  <span class="status-pill paid">Paid</span>
+                  <span class="status-pill paid">paid</span>
                 </label>
               </span>
             </td>
@@ -264,7 +259,6 @@
     "payment-made-for"
   ])
 
-  // holds one of "seat" | "category" | "amount" | null at any given point of time
   const editingField = ref(null) 
   const editValues = ref({
     seat: "",
@@ -334,7 +328,6 @@
   width: 100%;
 }
 
-/* Top patron details card */
 .l2s1 {
   background: #ffffff;
   border: 1px solid #e5e7eb;
@@ -352,7 +345,6 @@ h3 {
   color: #111827;
 }
 
-/* Each patron field row */
 .detail-row {
   display: flex;
   align-items: center;
@@ -388,7 +380,6 @@ h3 {
   white-space: nowrap;
 }
 
-/* pushes edit buttons to far right */
 .field-actions {
   margin-left: auto;
   display: flex;
@@ -432,7 +423,6 @@ h3 {
   background: #fecaca;
 }
 
-/* Inline edit input */
 .field-input {
   width: 100%;
   max-width: 240px;
@@ -450,7 +440,6 @@ h3 {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
-/* Payment table container */
 .l2s2 {
   background: #ffffff;
   border: 1px solid #e5e7eb;
@@ -461,18 +450,6 @@ h3 {
     display: flex;
   flex-direction: column;
 }
-
-/* .l2s2 {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-
-  max-height: 260px;
-  display: flex;
-  flex-direction: column;
-} */
 
 .payment-table-scroll {
   overflow-y: auto;
@@ -529,7 +506,6 @@ tbody tr:hover {
   background: #fafafa;
 }
 
-/* Payment status pill */
 .status-pill {
   display: inline-flex;
   align-items: center;
@@ -551,7 +527,6 @@ tbody tr:hover {
   color: #991b1b;
 }
 
-/* Radio button groups in table */
 td label {
   display: inline-flex;
   align-items: center;
@@ -567,7 +542,6 @@ input[type="radio"] {
   cursor: pointer;
 }
 
-/* Bottom buttons */
 .sec2-buttons {
   display: flex;
   justify-content: flex-end;

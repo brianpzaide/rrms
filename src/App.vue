@@ -1,16 +1,12 @@
 <template>
-<!-- ===== Analytics Section ===== -->
-<!-- <div class="analytics" id="analyticsSection">
-
-  <div class="analytics-header" onclick="toggleAnalytics()">
-    <span>📊 Analytics</span>
-    <span id="analyticsToggleIcon">▲</span>
-  </div>
-
-  <div class="analytics-body" id="analytics-body">
-    {% include 'templates/analytics.html' %}
-  </div>
-</div> -->
+  <AnalyticsPanel
+  :monthlyChartSeries="monthlyChartSeries"
+  :yearlyChartSeries="yearlyChartSeries"
+  :yearlyChartSeriesAxis="yearlyChartSeriesAxis"
+  :totalRevenue="totalRevenue"
+  :occupied="occupied"
+  :vacant="vacant"
+  />
 
   <div class="container">
     <div class="sec1">
@@ -31,6 +27,7 @@
 
 <script setup>
 
+  import AnalyticsPanel from './components/AnalyticsPanel.vue'
   import LeftPanel from './components/LeftPanel.vue'
   import RightPanel from './components/RightPanel.vue'
 
@@ -49,6 +46,34 @@
   
   const seats = ref([])
   const patrons = ref([])
+
+
+  const totalRevenue = ref(75000)
+  const occupied = ref(75)
+  const vacant = ref(25)
+
+  const monthlyChartSeries = ref([
+    {
+      name: 'Category1',
+      data: [12000, 13000, 12000, 13000, 12000, 13000, 12000, 13000, 12000, 13000, 12000, 13000]
+    },
+    {
+      name: 'Category2',
+      data: [14000, 15000, 14000, 15000, 14000, 15000, 14000, 15000, 14000, 15000, 14000, 15000]
+    },
+    {
+      name: 'Category3',
+      data: [11000, 12000, 11000, 12000, 11000, 12000, 11000, 12000, 11000, 12000, 11000, 12000]
+    },  
+  ])
+
+
+  const yearlyChartSeries = ref([{
+    name: 'Revenue',
+    data: [250000, 120000, 210000, 165000, 165000, 120000, 250000, 210000]
+  }])
+
+  const yearlyChartSeriesAxis = ref(['2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026'])
 
   function generateSeats() {
     const rrms_seats = new Array()
